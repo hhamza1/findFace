@@ -40,12 +40,25 @@ class App extends Component {
     }
 
     getFaceLocation = (data) => {
-        console.log(data.outputs[0].data.regions[0].region_info.bounding_box);
+        const detectedFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+        const img = document.getElementById('inputImg');
+        const width = Number(img.width);
+        const height = Number(img.height);
+        return {
+            leftCol: detectedFace.left_col * width,
+            topRow: detectedFace.top_row * height,
+            rightCol: width - (detectedFace.right_col),
+            bottomRow: height - (detectedFace.bottom_row)
+        }
+    };
+
+    displayFaceDetector = (box) => {
+        this.setState({box});
     }
 
     onInputChange = (event) => {
         this.setState({input : event.target.value});
-    }
+    };
 
     onDetect = () => {
         this.setState({imgUrl: this.state.input});
@@ -55,8 +68,7 @@ class App extends Component {
                 this.state.input)
             .then(response => this.getFaceLocation(response))
             .catch(err => console.log(err));
-    }   
-    
+    };
 
     render() {
         return (
